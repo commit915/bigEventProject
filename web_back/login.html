@@ -34,6 +34,7 @@
     </div>
     <script src="./js/jquery-1.12.4.min.js"></script>
     <script src="./tools/config.js"></script>
+    <script src="./tools/user.js"></script>
     <script>
         var $ipt_txt = $(".input_txt");
         var $password = $(".input_pass");
@@ -44,23 +45,16 @@
                 alert("请输入完整的登录信息");
                 return;
             }
-            $.ajax({
-                url: LOGIN,
-                type: "POST",
+            user.login({
                 data: {
                     user_name: username,
                     password: password
                 },
-                success: function (res) {
-                    if (res.code === 200) {
-                        location.href = "./index.html";
-                    } else {
-                        alert("用户名或者密码错误");
-                    }
-                    console.log(res);
-                    // location.href = "./index.html";
-
-
+                success: function () {
+                    location.href = "./index.html";
+                },
+                fail: function () {
+                    alert("用户名或者密码错误");
                 }
             })
         })

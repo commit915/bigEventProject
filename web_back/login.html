@@ -33,6 +33,7 @@
 
     </div>
     <script src="./js/jquery-1.12.4.min.js"></script>
+    <script src="./tools/config.js"></script>
     <script>
         var $ipt_txt = $(".input_txt");
         var $password = $(".input_pass");
@@ -44,7 +45,7 @@
                 return;
             }
             $.ajax({
-                url: "http://localhost:8000/admin/login",
+                url: LOGIN,
                 type: "POST",
                 data: {
                     user_name: username,

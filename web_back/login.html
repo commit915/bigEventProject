@@ -6,12 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>大事件-后台登录页</title>
+
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/iconfont.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css">
+
 </head>
 
 <body>
+    <!-- 1.jquery.js必须在bootstrap.js等框架的之前引入 -->
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <script src="js/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="./tools/config.js"></script>
+    <script src="./tools/user.js"></script>
     <div class="main_wrap">
         <div class="header">
             <a href="#" class="logo"><img src="images/logo.png" alt=""></a>
@@ -26,27 +36,66 @@
                 <input type="text" class="input_txt" placeholder="邮箱/手机号">
                 <input type="password" class="input_pass" placeholder="密码">
                 <!-- <input type="submit" class="input_sub" value="登 录"> -->
+
+                <!-- 对form表单提交按钮进行处理------------------------ -->
+                <!-- 1.阻止默认行为
+                2.修改为普通按钮 -->
+                <!-- 此处我们用的是第二种方法 -->
                 <input type="button" class="input_sub" value="登 录">
 
             </form>
         </div>
 
     </div>
-    <script src="./js/jquery-1.12.4.min.js"></script>
-    <script src="./tools/config.js"></script>
-    <script src="./tools/user.js"></script>
+
+
+    <!-- 下面是模态框的结构部分 -->
+    <!-- 使用boot的模态框对提示内容进行美化 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">提示信息</h4>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">阅</button>
+                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
+        //1.获取邮箱和密码框的内容
+
+        //变量前加$:是因为大项目变量太多,,不容易区分哪些是dom元素,哪些是jquery元素.因为不同的元素,所使用的方法格式也是不一样的
         var $ipt_txt = $(".input_txt");
         var $password = $(".input_pass");
+        var $myModal = $("#myModal");
+
+        //2.添加登录点击事件
         $(".input_sub").on("click", function () {
             var username = $ipt_txt.val().trim();
             var password = $password.val().trim();
             if (username === "" || password === "") {
-                alert("请输入完整的登录信息");
+                // alert("请输入完整的登录信息");
+                //3.利用模态框的show方法,让模态框显示;并且给其孩子的文本设置内容
+                $myModal.modal("show").find(".modal-body").text("请输入完整的登录信息");
                 return;
             }
+            //4.调用tools工具的user里边的login方法
+            //-------------------------------------
+            //目标:这个页面中只放这个页面需要的东西;如username,password以及成功或失败时调用函数所要做的具体内容
             user.login({
+                //5.传入一个对象,对象有三个参数,一个data对象,两个回调函数
                 data: {
+                    //把文本框的username传给user_name,作为options.data.user_name再传给接口中设置的参数user_name
                     user_name: username,
                     password: password
                 },
@@ -54,7 +103,8 @@
                     location.href = "./index.html";
                 },
                 fail: function () {
-                    alert("用户名或者密码错误");
+                    // alert("用户名或者密码错误");
+                    $myModal.modal("show").find(".modal-body").text("用户名或者密码错误");
                 }
             })
         })

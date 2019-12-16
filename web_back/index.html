@@ -118,9 +118,16 @@
     <script>
         var $logout = $(".logout");
         $logout.on("click", function () {
+
+            //confirm作用:-----------------!!!
+            // confirm有确定和取消按钮，点击确定返回true，点击取消返回false
             if (!confirm("请问要退出吗?")) {
                 return;
             }
+            // if (!alert("请问要退出吗?")) {
+            //     return;
+            // }
+
             user.logout({
                 success: function () {
                     location.href = "./login.html";

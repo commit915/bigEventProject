@@ -17,8 +17,9 @@
     <div class="sider">
         <a href="#" class="logo"><img src="images/logo02.png" alt="logo"></a>
         <div class="user_info">
-            <img src="images/2.jpg" alt="person">
-            <span>欢迎&nbsp;&nbsp;李思思</span>
+            <!-- images/2.jpg -->
+            <img src="images/2.jpg" alt="person" id="user_img">
+            <span>欢迎&nbsp;&nbsp;<em id="u_name">李思思</em></span>
             <b>管理员</b>
         </div>
         <div class="menu">
@@ -128,6 +129,7 @@
             //     return;
             // }
 
+            //2.用户退出方法
             user.logout({
                 success: function () {
                     location.href = "./login.html";
@@ -137,6 +139,15 @@
                 }
             })
 
+        })
+        //3.获取用户信息方法
+        user.getuser({
+            success: function (res) {
+                // console.log(res);
+
+                $("#u_name").text(res.data.nickname);
+                $("#user_img").prop('src', res.data.user_pic);
+            }
         })
     </script>
 

@@ -39,6 +39,19 @@ var user = {
         })
     },
     //3.获取用户信息方法
+    //分析getuser方法和user.getuser中res传递的参数
+    /* 
+    
+    {
+           options=success: function (res) {
+                // console.log(res);
+
+                $("#u_name").text(res.data.nickname);
+                $("#user_img,.user_center_link img").prop('src', res.data.user_pic);
+            }
+        }
+   
+    */
     getuser: function (options) {
         $.ajax({
             url: GETUSER,
@@ -47,6 +60,7 @@ var user = {
                 // console.log(res);
 
                 if (res.code === 200) {
+                    //用户调用这个方法时,把options.success(res)的res作为形参传给success: function (res)----因为接口在这边,就把接口里边的res传过去了
                     options.success(res);
                 }
             }

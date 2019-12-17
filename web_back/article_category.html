@@ -29,7 +29,7 @@
                     </tr>
                 </thead>
                 <tbody id="tbody">
-                    <!--  <tr>
+                    <tr>
                         <td>未分类</td>
                         <td>uncategorized</td>
                         <td class="text-center">
@@ -67,7 +67,7 @@
                                 class="btn btn-info btn-xs">编辑</a>
                             <a href="javascript:deleteTr( 4 );" class="btn btn-danger btn-xs">删除</a>
                         </td>
-                    </tr> -->
+                    </tr>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -115,35 +115,39 @@
     <!-- 引入模板引擎文件 -->
     <script src="./js/template-web.js"></script>
     <script src="./tools/config.js"></script>
-    <script src="./tools/user.js"></script>
+    <script src="./tools/article.js"></script>
     <!-- 设置分类表格的模板结构 -->
     <script id="category" type="text/template">
         {{each data val}}
-        <tr>
-            <td>{{val.name}}</td>
-            <td>{{val.slug}}</td>
-            <td class="text-center">
-                <a href="javascript:;"data-id="{{val.id}}" class="btn btn-info btn-xs edit">编辑</a>
+            <tr>
+              <td>{{val.name}}</td>
+              <td>{{val.slug}}</td>
+              <td class="text-center">
+                <a href="javascript:;" data-id="{{val.id}}" class="btn btn-info btn-xs edit">编辑</a>
                 <a href="javascript:;" data-id="{{val.id}}" class="btn btn-danger btn-xs del">删除</a>
-            </td>
-        </tr>
-        {{/each}}
-
-
+              </td>
+            </tr>
+            {{/each}}
     </script>
 
 
     <script>
         //   1.文章类别获取
 
-        $.ajax({
+        article.getCate({
+            success: function (res) {
+                var htmlStr = template("category", res);
+                $("#tbody").html(htmlStr);
+            }
+        })
+        /* $.ajax({
             url: "http://localhost:8000/admin/category_search",
             success: function (res) {
                 // console.log(res);
                 var htmlStr = template("category", res);
                 $("#tbody").html(htmlStr);
             }
-        })
+        }) */
 
         //   2.新增文章类别
 
@@ -154,19 +158,16 @@
                 alert("请输入完整信息");
                 return;
             }
-            $.ajax({
-                url: "http://localhost:8000/admin/category_add",
-                type: "POST",
+            article.getCatAdd({
                 data: {
                     name: nameVal,
                     slug: slugVal
                 },
                 success: function (res) {
-                    if (res.code === 200) {
-                        location.reload();
-                    } else {
-                        alert("新增失败");
-                    }
+                    location.reload();
+                },
+                fail: function (res) {
+                    alert("新增失败");
                 }
             })
         })
@@ -207,43 +208,66 @@
 
             //  4.编辑文章类别
             $("#modal_edit").on("click", function () {
-                // var 
-                $.ajax({
-                    url: "http://localhost:8000/admin/category_edit",
-                    type: "POST",
-                    // data: $("#form").serialize(),
+                var name1 = $("#name").val();
+                var slug1 = $("#slug").val()
+                article.getCatEdit({
                     data: {
                         id: id,
-                        name: $("#name").val(),
-                        slug: $("#slug").val()
+                        name: name1,
+                        slug: slug1
                     },
                     success: function (res) {
-                        if (res.code === 200) {
-                            location.reload();
-                        } else {
-                            alert("提交错误");
-                        }
-
-
+                        location.reload();
+                    },
+                    fail: function (res) {
+                        alert("提交错误");
                     }
                 })
+
+                /*   $.ajax({
+                      url: "http://localhost:8000/admin/category_edit",
+                      type: "POST",
+                      // data: $("#form").serialize(),
+                      data: {
+                          id: id,
+                          name: $("#name").val(),
+                          slug: $("#slug").val()
+                      },
+                      success: function (res) {
+                          if (res.code === 200) {
+                              location.reload();
+                          } else {
+                              alert("提交错误");
+                          }
+                      }
+                  }) */
             })
         })
 
         $("#tbody").on("click", ".del", function () {
             var id = $(this).data("id");
-            $.ajax({
-                url: "http://localhost:8000/admin/category_delete",
-                type: "POST",
+
+            article.getCatDel({
                 data: {
                     id: id
                 },
                 success: function (res) {
-                    if (res.code === 200) {
-                        location.reload();
-                    }
+                    location.reload();
                 }
             })
+
+            /*  $.ajax({
+                 url: "http://localhost:8000/admin/category_delete",
+                 type: "POST",
+                 data: {
+                     id: id
+                 },
+                 success: function (res) {
+                     if (res.code === 200) {
+                         location.reload();
+                     }
+                 }
+             }) */
         })
     </script>
 

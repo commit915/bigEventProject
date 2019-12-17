@@ -89,15 +89,38 @@ var user = {
             }
         })
     },
-    /* getMArtCount: function (options) {
+
+    getInfo: function (options) {
         $.ajax({
-            url: GETMARTCOUNT,
-            type: "GET",
+            url: GETINFO,
             success: function (res) {
+                if (res.code === 200) {
+
+                    options.success(res);
+                }
+            }
+        })
+    },
+    getInfoEdit: function (options) {
+        console.log(options);
+        // return;
+
+        $.ajax({
+            type: "POST",
+            url: GETINFOEDIT,
+            /* data: {
+                fd: options.data.fd
+            }, */
+            data: options.data.fd,
+            contentType: false, //不需要jQuery设置内容类型
+            processData: false, //不需要jQuery进行内容处理
+            success: function (res) {
+                console.log(res);
                 if (res.code === 200) {
                     options.success(res);
                 }
             }
         })
-    } */
+    }
+
 }

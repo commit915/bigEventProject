@@ -24,19 +24,19 @@
                 <div class="form-group">
                     <label for="username" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="username" value="李思思">
+                        <input type="text" class="form-control" id="username" name="username" value="李思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="nickname" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="nickname" value="思思">
+                        <input type="text" class="form-control" id="nickname" name="nickname" value="思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="email" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="email" value="lisisi@126.com">
+                        <input type="text" class="form-control" id="email" name="email" value="lisisi@126.com">
                     </div>
                 </div>
 
@@ -44,21 +44,22 @@
                     <label for="user_pic" class="col-sm-2 control-label">用户图标：</label>
                     <div class="col-sm-10">
                         <img src="images/2.jpg" alt="" class="user_pic" id="avatar">
-                        <input type="file" id="user_pic">
+                        <input type="file" id="user_pic" name="user_pic">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="password" class="col-sm-2 control-label">密码：</label>
                     <div class="col-sm-4">
-                        <input type="password" class="form-control" id="password" value="12345678">
+                        <input type="password" class="form-control" id="password" name="password" value="12345678">
                     </div>
                 </div>
 
 
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">修改</button>
+                        <!-- <button type="submit" class="btn btn-success">修改</button> -->
+                        <button type="button" class="btn btn-success" id="btn">修改</button>
                     </div>
                 </div>
             </form>
@@ -66,24 +67,72 @@
     </div>
 
     <script>
+        //1.信息的获取
         $.ajax({
             url: "http://localhost:8000/admin/userinfo_get",
             success: function (res) {
                 console.log(res);
                 if (res.code === 200) {
+                    //将数据展示到内容中
+                    //遍历:此方法可选,这样做比较简单,也可以一个一个进行获取
                     $.each(res.data, function (k, ele) {
                         if (k === "user_pic") {
                             $("#avatar").prop("src", ele);
                             return;
                         }
                         $("#" + k).val(ele);
+                        console.log($("#" + k));
+
                     })
                 }
 
             }
 
         })
+
+        //2.信息编辑功能
+        // 1.检测是否完整填写
+        $("#btn").on("click", function () {
+            //1.1检测文件域是否选择文件,使用dom对象的files属性,进行length检测
+            if (
+                $("#username").val().trim() === "" ||
+                $("#nickname").val().trim() === "" ||
+                $("#email").val().trim() === "" ||
+                $("#password").val().trim() === "" ||
+                $("#user_pic")[0].files.length === 0
+            ) {
+                alert("内容没有填写完整");
+                return; //阻止后续的请求发送
+            }
+            //1.2将数据发送给服务器处理,使用FormData
+            //注意1:这里传入的参数必须为DOM形式的form标签
+            var fd = new FormData($("form")[0]);
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8000/admin/userinfo_edit",
+                data: fd,
+                contentType: false, //不需要jQuery设置内容类型
+                processData: false, //不需要jQuery进行内容处理
+                success: function (res) {
+                    if (res.code === 200) {
+                        //注意2:这里不是让user.html跳转到login.html!!!而是让user.html中的iframe所在的Index.html跳转到login.html
+
+                        //location和parent都是window下边的对象
+                        parent.location.href = "./login.html";
+                    }
+                }
+            })
+        })
+        //图片预览功能
+        // 给文件input框加change事件,只要有改变就会触发事件
+        $("#user_pic").on("change", function () {
+            console.log($(this)[0].files); //查看文件域选择的文件信息FileList
+
+            var tempSrc = URL.createObjectURL($(this)[0].files[0]); //$(this)[0].files[0]获取某条文件的信息
+            $("#avatar").prop("src", tempSrc); //临时图片地址传给img的src
+        })
     </script>
+
 
 </body>
 

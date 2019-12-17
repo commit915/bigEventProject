@@ -1,0 +1,172 @@
+/*
+功能简介
+1 分类数据展示功能
+- 发送请求，获取数据
+- 使用模板引擎进行结构生成
+- 设置模板
+- 调用模板方法，将数据和模板结合得到要生成的结构字符串
+- 生成到页面中即可
+2 分类数据新增功能
+- 点击新增按钮，进行内容检测
+- 填写完毕，发送请求
+- 新增成功后，调用location.reload()刷新页面(iframe中的小区域)
+3 分类数据编辑功能
+- 编辑和新增使用的是同一个模态框
+- 设置一个提交编辑按钮，用来进行编辑操作
+- 进行操作效果处理：点击新增，将提交编辑按钮隐藏，点击编辑，将新增按钮隐藏
+- 点击表格中的编辑按钮时，需要获取到数据的id
+- 可以在创建结构时添加data-id属性保存
+- 为了方便获取编辑按钮，添加了edit类名
+- 在模态框中设置隐藏域，用来保存编辑的id
+- 点击提交编辑，检测内容并发送请求
+4 分类数据删除功能
+- 点击删除按钮，获取data-id
+- 将data-id发送给接口进行删除操作
+*/
+
+//这些代码是为了演示功能用的,不用看
+<script>
+    /* $('#addModal').modal({
+show:false,
+backdrop:false
+});
+
+$('#model_shutoff').click(function(){
+alert('shutoff');
+$('#addModal').modal('hide');
+});
+
+$('#model_add').click(function(){
+alert('add');
+$('#addModal').modal('hide');
+});
+
+$('.category_table').delegate('a','click',function(){
+if($(this).hasClass('btn-info')){
+$('#addModal .modal-title').html('修改分类名称');
+$('#addModal').modal('show');
+}
+}) */
+
+    //1.分类数据展示功能
+    $.ajax({
+        url: "http://localhost:8000/admin/category_search",
+        success: function (res) {
+            console.log(res);
+            if (res.code === 200) {
+                //调用模板方法生成结构
+                var htmlStr = template("category", res);
+                //生成到页面中
+                $("#tbody").html(htmlStr);
+            }
+
+        }
+    })
+    /* article.getCate({
+    success: function (res) {
+    //调用模板方法生成结构
+    var htmlStr = template("category", res);
+    //生成到页面中
+    $("#tbody").html(htmlStr);
+    }
+    }) */
+
+    //2.分类数据新增功能
+    $("#modal_add").on("click", function () {
+        var nameVal = $("#name").val().trim();
+        var slugVal = $("#slug").val().trim();
+        if (nameVal == "" || slugVal == "") {
+            alert("请完整输入内容");
+            return;
+        }
+        $.ajax({
+            url: "http://localhost:8000/admin/category_add",
+            type: "POST",
+            /* data: {
+            name: nameVal,
+            slug: slugVal
+            }, */
+            data: $("#form").serialize(),
+            success: function (res) {
+                // console.log(res);
+                if (res.code === 200) {
+                    //reload进行页面的刷新,重新渲染
+                    location.reload();
+                } else {
+                    alert("名称或者别名已存在");
+                    $("#form")[0].reset();
+                }
+            }
+        })
+
+    })
+
+    //3.关闭功能
+    $("#modal_shutoff").on("click", function () {
+        $("#addModal").modal("hide");
+        $("#form")[0].reset();
+    })
+
+    //4.编辑功能
+    /* 3 分类数据编辑功能
+    - 编辑和新增使用的是同一个模态框
+    - 设置一个提交编辑按钮，用来进行编辑操作
+    - 进行操作效果处理：点击新增，将提交编辑按钮隐藏，点击编辑，将新增按钮隐藏
+    - 点击表格中的编辑按钮时，需要获取到数据的id
+    - 可以在创建结构时添加data-id属性保存
+    - 为了方便获取编辑按钮，添加了edit类名
+    - 在模态框中设置隐藏域，用来保存编辑的id
+    - 点击提交编辑，检测内容并发送请求 */
+    $("#addCate").on("click", function () {
+        $("#modal_edit").hide();
+        $("#modal_add").show();
+    })
+    // 点击编辑，将新增按钮隐藏
+    $("#tbody").on("click", ".edit", function () {
+        $("#addModal").modal("show");
+        $("#modal_edit").show();
+        $("#modal_add").hide();
+
+        //需要根据id获取编辑哪条的数据,并把这条数据渲染到编辑页面
+        var id = $(this).data("id");
+        //把获取的这个id给模态框
+        $("#hidden").val(id);
+        //取出当前行的数据
+        var $tds = $(this).parents('tr').children(); // 取出当前行中所有td
+
+        $('#name').val($tds.eq(0).text());
+        $('#slug').val($tds.eq(1).text());
+    })
+    //点击提交编辑
+    $("#modal_edit").on("click", function () {
+        $.ajax({
+            url: "http://localhost:8000/admin/category_edit",
+            type: "POST",
+            data: $("#form").serialize(),
+            success: function (res) {
+                console.log(res);
+
+                if (res.code === 200) {
+                    location.reload();
+                } else {
+                    alert("编辑失败");
+                }
+            }
+        })
+    })
+    $("#tbody").on("click", ".del", function () {
+        var id = $(this).data("id");
+        $.ajax({
+            url: "http://localhost:8000/admin/category_delete",
+            type: "POST",
+            data: {
+                id: id
+            },
+            success: function (res) {
+                if (res.code === 200) {
+                    location.reload();
+                }
+            }
+        })
+    })
+</script>

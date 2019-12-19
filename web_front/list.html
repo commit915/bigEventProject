@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="css/jquery.pagination.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
-	<script type="text/javascript" src="js/jquery.pagination.min.js"></script>
+    <script type="text/javascript" src="js/jquery.pagination.min.js"></script>
 </head>
 
 <body>
@@ -41,7 +41,7 @@
                     <li><a href="#">公 司</a></li>
                 </ul>
             </div>
-            <ul class="left_menu fl">
+            <ul class="left_menu fl" id="list1">
                 <li><a href="#">最 新</a></li>
                 <li><a href="#">科 技</a></li>
                 <li><a href="#">股 市</a></li>
@@ -59,11 +59,11 @@
     <div class="main_con clearfix">
         <div class="left_con setfr">
 
-            <div class="list_title">
+            <div class="list_title" id="title">
                 <h3>科 技</h3>
             </div>
 
-            <div class="common_news_list">
+            <!-- <div class="common_news_list">
                 <a href="#" class="list_pic"><img src="images/pic09.jpg" alt=""></a>
                 <h4><a href="#">亚马逊金融试水中国？背后却是和华尔街的“金融战争” </a></h4>
                 <p>亚马逊抛弃了中国的买家们，却难以割舍庞大的卖家市场，有消息指出亚马逊中国将针对中国庞大的卖家群体推出一项贷款推荐计划。在连续对印度、墨西哥等新兴市场大力推广线上支付服务后，亚马逊金融试水进军中国市场的信号终于被放出。
@@ -133,15 +133,15 @@
                         )&nbsp;&nbsp;&nbsp;<i class="fa fa-commenting"></i>&nbsp;评论( 10 )</span>
                     <b>发布于 2018-08-30 12:18:58</b>
                 </div>
-            </div>
+            </div> -->
 
             <div id="pagination" class="page"></div>
             <script>
-                $(function() {
+                $(function () {
                     $("#pagination").pagination({
                         currentPage: 2,
-                        totalPage:8,
-                        callback: function(current) {
+                        totalPage: 8,
+                        callback: function (current) {
                             alert('ok!');
                         }
                     });
@@ -220,11 +220,57 @@
             <span>|</span>
             <a href="#">招聘人才</a>
             <span>|</span>
-            <a href="#">友情链接</a>		
+            <a href="#">友情链接</a>
         </div>
-        <p>CopyRight © 2019 深圳大事件信息技术股份有限公司   All Rights Reserved</p>
-        <p>电话：0755-****888    粤ICP备*******8号</p>
+        <p>CopyRight © 2019 深圳大事件信息技术股份有限公司 All Rights Reserved</p>
+        <p>电话：0755-****888 粤ICP备*******8号</p>
     </div>
+
+
+    <script src="./js/axios.js"></script>
+
+    <script src="../web_back/js/template-web.js"></script>
+    <!-- 3.获取首页最新资讯 -->
+
+    <script type="text/template" id="Newlist">
+        {{each data val}}
+    
+            <div class="common_news_list">
+                <a href="article.html?id={{val.id}}" class="list_pic"><img src="{{val.cover}}" alt=""></a>
+                <h4><a href="#">{{val.title}}</a></h4>
+                <p>{{@val.content}}</p>
+                <div class="new_info">
+                    <span>标签：{{val.type}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;阅读( {{val.read}} )&nbsp;&nbsp;&nbsp;<i class="fa fa-commenting"></i>&nbsp;评论( {{val.comment}} )</span>
+                    <b>发布于 {{val.date}}</b>
+                </div>
+            </div>
+
+            {{/each}}
+    </script>
+
+
+    <script>
+        //1.接收index页面传过来的id
+        var id = location.search.split("=")[1];
+        console.log(id);
+
+
+        axios({
+                method: "get",
+                url: "http://localhost:8000/admin/search",
+                params: {
+                    type: id
+                }
+            })
+            .then(function (res) {
+                console.log(res);
+
+                var htmlStr = template("Newlist", res.data);
+                // $("#title").after(htmlStr).children("h3").text(res.data[0].type);
+                $('#title').after(htmlStr).children('h3').text(res.data.data[0].type);
+
+            })
+    </script>
 
 </body>
 

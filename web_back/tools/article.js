@@ -62,7 +62,18 @@ var article = {
                 }
             }
         })
-    }
+    },
+    /* getArcSer: function (options) {
+        $.ajax({
+            url: GETARCSER,
+            data: {
+                page: options.data.page
+            },
+            success: function (res) {
+                options.success(res);
+            }
+        })
+    } */
 
 
 }

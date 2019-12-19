@@ -15,7 +15,7 @@ var user = {
             },
             success: function (res) {
                 if (res.code === 200) {
-                    // console.log(res);
+                    console.log(res.data);
                     options.success();
                 } else {
                     options.fail();

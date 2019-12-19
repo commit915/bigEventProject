@@ -79,7 +79,7 @@
                         return;
                     }
                     $("#" + k).val(ele);
-                    console.log($("#" + k));
+                    // console.log($("#" + k));
                 })
             }
 
@@ -120,10 +120,11 @@
             //1.2将数据发送给服务器处理,使用FormData
             //注意1:这里传入的参数必须为DOM形式的form标签
             var fd = new FormData($("form")[0]);
+            console.log(fd);
 
             user.getInfoEdit({
                 data: {
-                    fd: fd
+                    fd
                 },
                 success: function (res) {
                     parent.location.href = "./login.html";

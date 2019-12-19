@@ -17,3 +17,4 @@ var GETCATE = BASE_URL + "/admin/category_search";
 var GETCATADD = BASE_URL + "/admin/category_add";
 var GETCATEDIT = BASE_URL + "/admin/category_edit";
 var GETCATDEL = BASE_URL + "/admin/category_delete";
+var GETARCSER = BASE_URL + "/admin/search";

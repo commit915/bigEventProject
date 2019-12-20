@@ -70,6 +70,8 @@
         </div>
     </div>
 
+    <script src="../web_front/js/axios.js"></script>
+
 
     <script>
         //1.获取邮箱和密码框的内容
@@ -101,6 +103,8 @@
                     password: password
                 },
                 success: function () {
+                    console.log(123);
+
                     location.href = "./index.html";
                 },
                 fail: function () {
@@ -108,6 +112,17 @@
                     $myModal.modal("show").find(".modal-body").text("用户名或者密码错误");
                 }
             })
+            /*  axios.post("http://localhost:8000/admin/login", $qs.stringify({
+                    user_name: username,
+                    password: password
+                }))
+                .then(function (res) {
+                    console.log(res);
+                    if (res.code === 200) {
+                        // console.log(res);
+                        location.href = "./index.html";
+                    }
+                })*/
         })
     </script>
 
